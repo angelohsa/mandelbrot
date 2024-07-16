@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mandelbrot Set</title>
+        <body>
+            <canvas id="canvas" width="500" height="500">
+                
+            </canvas>
+            <script text="text/javascript">
+                const canvas = document.getElementById('canvas')
+                const width = canvas.width
+                const height = canvas.height
+                const maxIteration = 50
+                const ctx = canvas.getContext('2d')
+                const imageData = ctx.getImageData(0, 0, width, height)
+                const arrayPixels = imageData.data
+
+                const map = function(vlr, min, max, minMap, maxMap){
+                    return (vlr / (max -min)) * (maxMap - minMap) + minMap
+                }
+
+
+                for(let y = 0; y <= height ; y++){
+                    for(let x = 0; x <= width ; x++){
+                        var a = map(x, 0, width , -2, 2)
+                        var b = map(y, 0, height , -2, 2)
+
+                        let za = 0
+                        let zb = 0
+                        let i = 0
+
+                        for(i = 0; i < maxIteration; i++) {
+                            var atemp = (za * za - zb * zb)
+                            var btemp = (2 * za * zb)
+                            za = atemp + a
+                            zb = btemp + b
+                                                        
+                            if (Math.abs(za + zb) > 14) {
+                                break
+                            }
+                        }
+
+                        let cor = map(i, 0, maxIteration, 0, 255)
+
+                        if (i == maxIteration) cor = 0
+                        
+                        const indice = (x + y * width) * 4
+                        
+                        arrayPixels[indice] = cor
+                        arrayPixels[indice + 1] = cor
+                        arrayPixels[indice + 2] =  cor
+                        arrayPixels[indice + 3] = 255
+
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+            </script>
+        </body>
+    </head>
+</html>
